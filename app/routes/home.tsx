@@ -1,13 +1,13 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { BankStatementViewer } from "../components/BankStatementViewer";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Bank Statement Viewer" },
+    { name: "description", content: "Upload and view bank statement transactions" },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <BankStatementViewer />;
 }
