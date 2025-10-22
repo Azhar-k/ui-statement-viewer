@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TransactionFilters } from '../services/api';
+import type { TransactionFilters } from '../services/api';
 
 interface TransactionFiltersProps {
   onFiltersChange: (filters: TransactionFilters) => void;
@@ -22,7 +22,7 @@ export function TransactionFiltersComponent({ onFiltersChange, currentFilters }:
   const clearFilters = () => {
     const clearedFilters: TransactionFilters = {
       page: 0,
-      size: 10,
+      size: 40,
       sortBy: 'date',
       sortDir: 'desc'
     };
@@ -107,74 +107,110 @@ export function TransactionFiltersComponent({ onFiltersChange, currentFilters }:
           </div>
 
           {/* Amount Ranges */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-6">
+            {/* Debit Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Min Debit
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Debit Range (KWD)
               </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={localFilters.minDebit || ''}
-                onChange={(e) => handleFilterChange('minDebit', e.target.value ? parseFloat(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Min Debit
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={localFilters.minDebit || ''}
+                    onChange={(e) => handleFilterChange('minDebit', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Max Debit
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={localFilters.maxDebit || ''}
+                    onChange={(e) => handleFilterChange('maxDebit', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Max Debit
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={localFilters.maxDebit || ''}
-                onChange={(e) => handleFilterChange('maxDebit', e.target.value ? parseFloat(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Min Credit
-              </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={localFilters.minCredit || ''}
-                onChange={(e) => handleFilterChange('minCredit', e.target.value ? parseFloat(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Credit Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Max Credit
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Credit Range (KWD)
               </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={localFilters.maxCredit || ''}
-                onChange={(e) => handleFilterChange('maxCredit', e.target.value ? parseFloat(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Min Credit
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={localFilters.minCredit || ''}
+                    onChange={(e) => handleFilterChange('minCredit', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Max Credit
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={localFilters.maxCredit || ''}
+                    onChange={(e) => handleFilterChange('maxCredit', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* Balance Range */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Min Balance
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Balance Range (KWD)
               </label>
-              <input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={localFilters.minBalance || ''}
-                onChange={(e) => handleFilterChange('minBalance', e.target.value ? parseFloat(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Min Balance
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={localFilters.minBalance || ''}
+                    onChange={(e) => handleFilterChange('minBalance', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Max Balance
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    value={localFilters.maxBalance || ''}
+                    onChange={(e) => handleFilterChange('maxBalance', e.target.value ? parseFloat(e.target.value) : undefined)}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-gray-100"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

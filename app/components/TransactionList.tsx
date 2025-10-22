@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Transaction, PageResponse, getTransactions, TransactionFilters } from '../services/api';
+import { getTransactions } from '../services/api';
+import type { Transaction, PageResponse, TransactionFilters } from '../services/api';
 
 interface TransactionListProps {
   refreshTrigger: number;
@@ -48,13 +49,25 @@ export function TransactionList({ refreshTrigger, filters, onFiltersChange }: Tr
     if (amount === null) return '-';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'KWD'
     }).format(amount);
   };
 
   const formatDate = (dateString: string) => {
     try {
-      // Handle different date formats
+      // Server sends dates in dd-mm-yyyy format
+      const parts = dateString.split('-');
+      if (parts.length === 3) {
+        // Convert dd-mm-yyyy to yyyy-mm-dd for proper Date parsing
+        const [day, month, year] = parts;
+        const date = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+      }
+      // Fallback for other formats
       const date = new Date(dateString);
       return date.toLocaleDateString('en-US', {
         year: 'numeric',

@@ -51,9 +51,7 @@ export interface TransactionFilters {
   maxBalance?: number;
 }
 
-export interface UploadResponse {
-  message: string;
-}
+export type UploadResponse = string;
 
 /**
  * Upload a PDF file to the server
@@ -72,7 +70,7 @@ export async function uploadPdf(file: File): Promise<UploadResponse> {
     throw new Error(`Upload failed: ${errorText}`);
   }
 
-  return response.json();
+  return response.text();
 }
 
 /**

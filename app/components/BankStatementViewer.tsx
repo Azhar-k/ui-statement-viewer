@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { PdfUpload } from './components/PdfUpload';
-import { TransactionList } from './components/TransactionList';
-import { TransactionFiltersComponent } from './components/TransactionFilters';
-import { TransactionFilters } from './services/api';
+import { PdfUpload } from './PdfUpload';
+import { TransactionList } from './TransactionList';
+import { TransactionFiltersComponent } from './TransactionFilters';
+import type { TransactionFilters } from '../services/api';
 
 export function BankStatementViewer() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -10,7 +10,7 @@ export function BankStatementViewer() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [filters, setFilters] = useState<TransactionFilters>({
     page: 0,
-    size: 10,
+    size: 40,
     sortBy: 'date',
     sortDir: 'desc'
   });
