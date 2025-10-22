@@ -54,23 +54,45 @@ export interface TransactionFilters {
 export type UploadResponse = string;
 
 /**
- * Upload a PDF file to the server
+ * Upload a PDF file to the server with progress tracking
  */
-export async function uploadPdf(file: File): Promise<UploadResponse> {
+export async function uploadPdf(
+  file: File, 
+  onProgress?: (progress: number) => void
+): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append('file', file);
 
-  const response = await fetch(`${API_BASE_URL}/api/statements/upload`, {
-    method: 'POST',
-    body: formData,
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    // Track upload progress
+    xhr.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable && onProgress) {
+        const progress = Math.round((event.loaded / event.total) * 100);
+        onProgress(progress);
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.responseText);
+      } else {
+        reject(new Error(`Upload failed: ${xhr.statusText}`));
+      }
+    });
+
+    xhr.addEventListener('error', () => {
+      reject(new Error('Upload failed: Network error'));
+    });
+
+    xhr.addEventListener('abort', () => {
+      reject(new Error('Upload cancelled'));
+    });
+
+    xhr.open('POST', `${API_BASE_URL}/api/statements/upload`);
+    xhr.send(formData);
   });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Upload failed: ${errorText}`);
-  }
-
-  return response.text();
 }
 
 /**

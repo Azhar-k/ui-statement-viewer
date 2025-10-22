@@ -8,6 +8,7 @@ interface PdfUploadProps {
 
 export function PdfUpload({ onUploadSuccess, onUploadError }: PdfUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,13 +19,17 @@ export function PdfUpload({ onUploadSuccess, onUploadError }: PdfUploadProps) {
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
     try {
-      const result = await uploadPdf(file);
+      const result = await uploadPdf(file, (progress) => {
+        setUploadProgress(progress);
+      });
       onUploadSuccess(result);
     } catch (error) {
       onUploadError(error instanceof Error ? error.message : 'Upload failed');
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -102,8 +107,24 @@ export function PdfUpload({ onUploadSuccess, onUploadError }: PdfUploadProps) {
               {isUploading ? 'Uploading...' : 'Upload Bank Statement'}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              Drag and drop your PDF file here, or click to browse
+              {isUploading ? 'Processing your PDF file...' : 'Drag and drop your PDF file here, or click to browse'}
             </p>
+            
+            {/* Progress Bar */}
+            {isUploading && (
+              <div className="mt-4 w-full">
+                <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  <span>Upload Progress</span>
+                  <span>{uploadProgress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
