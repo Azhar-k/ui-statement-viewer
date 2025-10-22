@@ -20,7 +20,7 @@ export function PdfUpload({ onUploadSuccess, onUploadError }: PdfUploadProps) {
     setIsUploading(true);
     try {
       const result = await uploadPdf(file);
-      onUploadSuccess(result.message);
+      onUploadSuccess(result);
     } catch (error) {
       onUploadError(error instanceof Error ? error.message : 'Upload failed');
     } finally {
