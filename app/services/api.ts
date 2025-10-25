@@ -2,6 +2,18 @@
 
 const API_BASE_URL = 'http://localhost:8080';
 
+// Basic authentication credentials
+const BASIC_AUTH_USERNAME = 'klmdev';
+const BASIC_AUTH_PASSWORD = 'klm@2025';
+
+// Helper function to create Authorization header
+function getAuthHeader(): string {
+  const credentials = btoa(`${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`);
+  const authHeader = `Basic ${credentials}`;
+  console.log('Authorization header:', authHeader);
+  return authHeader;
+}
+
 export interface Transaction {
   id: number;
   date: string;
@@ -91,6 +103,10 @@ export async function uploadPdf(
     });
 
     xhr.open('POST', `${API_BASE_URL}/api/statements/upload`);
+    const authHeader = getAuthHeader();
+    console.log('Upload Authorization header:', authHeader);
+    xhr.setRequestHeader('Authorization', authHeader);
+    console.log('Upload URL:', `${API_BASE_URL}/api/statements/upload`);
     xhr.send(formData);
   });
 }
@@ -110,10 +126,21 @@ export async function getTransactions(filters: TransactionFilters = {}): Promise
 
   const url = `${API_BASE_URL}/api/statements/transactions?${params.toString()}`;
   
-  const response = await fetch(url);
+  console.log('Fetching URL:', url);
+  const headers = {
+    'Authorization': getAuthHeader(),
+    'Content-Type': 'application/json',
+  };
+  console.log('Request headers:', headers);
+  
+  const response = await fetch(url, { headers });
+  
+  console.log('Response status:', response.status);
+  console.log('Response headers:', Object.fromEntries(response.headers.entries()));
   
   if (!response.ok) {
     const errorText = await response.text();
+    console.error('Error response:', errorText);
     throw new Error(`Failed to fetch transactions: ${errorText}`);
   }
 
